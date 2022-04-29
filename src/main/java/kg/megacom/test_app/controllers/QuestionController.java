@@ -19,14 +19,14 @@ public class QuestionController {
     @Autowired
     private SubjectService subjectService;
 
-    @PostMapping("/save")
-    public QuestionDto save(){
-        return null;
-    }
 //    @PostMapping("/save")
-//    public QuestionDto save(@RequestBody QuestionSaveInfo questionSaveInfo){
-//        return questionService.save(questionSaveInfo);
+//    public QuestionDto save(){
+//        return null;
 //    }
+    @PostMapping("/save")
+    public QuestionDto save(@RequestBody QuestionSaveInfo questionSaveInfo){
+        return questionService.save(questionSaveInfo);
+    }
 
     @PutMapping("/update")
     public QuestionDto update(@RequestBody QuestionDto questionDto){

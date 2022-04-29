@@ -1,6 +1,8 @@
 package kg.megacom.test_app.controllers;
 
 import kg.megacom.test_app.models.dto.TestDto;
+import kg.megacom.test_app.models.dto.json.TestCreateJson;
+import kg.megacom.test_app.models.dto.json.TestResultJson;
 import kg.megacom.test_app.models.entities.Test;
 import kg.megacom.test_app.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,11 @@ public class TestController {
     @GetMapping("/findAllByActive")
     public List<TestDto> findAllByActive(){
         return testService.findAllByActive();
+    }
+
+    @PostMapping("/create")
+    public TestResultJson createTest(@RequestBody TestCreateJson testCreateJson){
+        return testService.createNewTest(testCreateJson);
     }
 }
 

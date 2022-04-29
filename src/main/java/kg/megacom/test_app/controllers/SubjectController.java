@@ -17,8 +17,8 @@ public class SubjectController {
 
     @Autowired
     private SubjectService subjectService;
-//    @Autowired
-//    private LanguageService languageService;
+    @Autowired
+    private LanguageService languageService;
 
     @PostMapping("/save")
     public SubjectDto save(@RequestBody SubjectDto subjectDto){
@@ -40,11 +40,11 @@ public class SubjectController {
         return subjectService.delete(subjectDto);
     }
 
-//    @GetMapping("/findAllByLanguage")
-//    public List<SubjectDto> findAllByLanguage(@RequestParam Long languageId){
-//        LanguageDto languageDto = languageService.findById(languageId);
-//        return subjectService.findAllByLanguage(languageDto);
-//    }
+    @GetMapping("/findAllByLanguage")
+    public List<SubjectDto> findAllByLanguage(@RequestParam Long languageId){
+        LanguageDto languageDto = languageService.findById(languageId);
+        return subjectService.findAllByLanguage(languageDto);
+    }
 
 
 

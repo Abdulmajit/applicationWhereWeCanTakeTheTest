@@ -41,6 +41,10 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public QuestionDto save(QuestionSaveInfo questionSaveInfo) {
+        AnswerSaveInfo answerSaveInfo = questionSaveInfo.getAnswers().stream().filter(y->y.isTrue() == true).findFirst().orElse(null);
+        if(answerSaveInfo == null){
+            return null;
+        }
         Question question = new Question();
         question.setActive(true);
         question.setImage(questionSaveInfo.getImage());
@@ -104,7 +108,13 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionDto> findAllBySubject(SubjectDto subjectDto) {
-        List<Question> questions = questionDao.findAllBySubjectAndIsActiveTrue(subjectMapper.subjectDtoToSubject(subjectDto));
+        List<Question> questions = questionDao.findAllBySubjectAndIsActiveTrue(subjectDto.getId());
+        return questionMapper.questionListToQuestionDtoList(questions);
+    }
+
+    @Override
+    public List<QuestionDto> findQuestionsRandomly(SubjectDto subjectDto, int questionAmount) {
+        List<Question> questions = questionDao.findAllBySubjectByRandom(subjectDto.getId(), questionAmount);
         return questionMapper.questionListToQuestionDtoList(questions);
     }
 }

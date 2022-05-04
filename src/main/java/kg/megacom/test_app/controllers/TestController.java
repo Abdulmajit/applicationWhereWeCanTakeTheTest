@@ -1,6 +1,7 @@
 package kg.megacom.test_app.controllers;
 
 import kg.megacom.test_app.models.dto.TestDto;
+import kg.megacom.test_app.models.dto.json.PreparedTest;
 import kg.megacom.test_app.models.dto.json.TestCreateJson;
 import kg.megacom.test_app.models.dto.json.TestResultJson;
 import kg.megacom.test_app.models.entities.Test;
@@ -45,6 +46,11 @@ public class TestController {
     @PostMapping("/create")
     public TestResultJson createTest(@RequestBody TestCreateJson testCreateJson){
         return testService.createNewTest(testCreateJson);
+    }
+
+    @GetMapping("/getById")
+    public PreparedTest getById(@RequestParam Long id){
+        return testService.getById(id);
     }
 }
 

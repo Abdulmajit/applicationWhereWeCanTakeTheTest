@@ -1,7 +1,10 @@
 package kg.megacom.test_app.services;
 
 
+import kg.megacom.test_app.models.dto.TestSubjectDto;
 import kg.megacom.test_app.models.dto.TestSubjectQuestionDto;
+
+import java.util.List;
 
 public interface TestSubjectQuestionService {
 
@@ -12,5 +15,7 @@ public interface TestSubjectQuestionService {
     TestSubjectQuestionDto update(TestSubjectQuestionDto testSubjectQuestionDto);
 
     TestSubjectQuestionDto delete(TestSubjectQuestionDto testSubjectQuestionDto);
+
+    List<TestSubjectQuestionDto> findAllByTestSubject(TestSubjectDto testSubjectDto);
 
 }

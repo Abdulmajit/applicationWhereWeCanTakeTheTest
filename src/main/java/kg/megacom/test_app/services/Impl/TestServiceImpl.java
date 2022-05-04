@@ -3,9 +3,7 @@ package kg.megacom.test_app.services.Impl;
 import kg.megacom.test_app.dao.TestDao;
 import kg.megacom.test_app.mappers.TestMapper;
 import kg.megacom.test_app.models.dto.*;
-import kg.megacom.test_app.models.dto.json.PreparedTest;
-import kg.megacom.test_app.models.dto.json.TestCreateJson;
-import kg.megacom.test_app.models.dto.json.TestResultJson;
+import kg.megacom.test_app.models.dto.json.*;
 import kg.megacom.test_app.models.entities.Test;
 import kg.megacom.test_app.services.*;
 import org.slf4j.Logger;
@@ -13,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -31,6 +31,8 @@ public class TestServiceImpl implements TestService {
     private QuestionService questionService;
     @Autowired
     private TestSubjectQuestionService testSubjectQuestionService;
+    @Autowired
+    private AnswerService answerService;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -130,13 +132,36 @@ public class TestServiceImpl implements TestService {
             return prepTest;
         }
 
+        List<PreparedQuestion> questions = new ArrayList<>();
 
+        List<TestSubjectDto> testSubjectDtos = testSubjectService.findAllByTest(testDto);
+        testSubjectDtos.stream().forEach(x->{
+            List<TestSubjectQuestionDto> questionsBySubject = testSubjectQuestionService.findAllByTestSubject(x);
+            questionsBySubject.stream().forEach(y->{
+                   PreparedQuestion preparedQuestion = new PreparedQuestion();
+                   preparedQuestion.setId(y.getQuestion().getId());
+                   preparedQuestion.setQuestion(y.getQuestion().getQuestion());
+                   preparedQuestion.setSubjectId(y.getTestSubject().getSubject().getId());
 
-
-        // findAllTestSubjectsByTest
-        // в цикле перебираем и по каждому TestSubject находим TestSubjectQuestions
-        //
-
-        return null;
+                   List<PreparedAnswer> answers = new ArrayList<>();
+                   List<AnswerDto> answerDtoList = answerService.findAllByQuestion(y.getQuestion());
+                   answerDtoList.stream().forEach(z->{
+                       PreparedAnswer preparedAnswer = new PreparedAnswer();
+                       preparedAnswer.setId(z.getId());
+                       preparedAnswer.setAnswer(z.getAnswer());
+                       answers.add(preparedAnswer);
+                   });
+                   Collections.shuffle(answers);
+                   preparedQuestion.setAnswers(answers);
+                   questions.add(preparedQuestion);
+            });
+        });
+        Collections.shuffle(questions);
+        prepTest.setQuestions(questions);
+        prepTest.setTestName(testDto.getName());
+        prepTest.setTestId(testDto.getId());
+        prepTest.setStatus(1);
+        prepTest.setMessage("Успешно");
+        return prepTest;
     }
 }

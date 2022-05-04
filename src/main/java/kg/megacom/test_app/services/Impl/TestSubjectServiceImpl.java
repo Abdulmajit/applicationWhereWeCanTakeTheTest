@@ -1,6 +1,7 @@
 package kg.megacom.test_app.services.Impl;
 
 import kg.megacom.test_app.dao.TestSubjectDao;
+import kg.megacom.test_app.mappers.TestMapper;
 import kg.megacom.test_app.mappers.TestSubjectMapper;
 import kg.megacom.test_app.models.dto.TestDto;
 import kg.megacom.test_app.models.dto.TestSubjectDto;
@@ -16,6 +17,7 @@ public class TestSubjectServiceImpl implements TestSubjectService {
     @Autowired
     private TestSubjectDao testSubjectDao;
     private TestSubjectMapper testSubjectMapper = TestSubjectMapper.INSTANCE;
+    private TestMapper testMapper = TestMapper.INSTANCE;
     @Override
     public TestSubjectDto save(TestSubjectDto testSubjectDto) {
         TestSubject testSubject = testSubjectMapper.testSubjectDtoToTestSubject(testSubjectDto);
@@ -48,6 +50,7 @@ public class TestSubjectServiceImpl implements TestSubjectService {
 
     @Override
     public List<TestSubjectDto> findAllByTest(TestDto testDto) {
-        return null;
+        List<TestSubject> testSubjectList = testSubjectDao.findAllByTest(testMapper.testDtoToTest(testDto));
+        return testSubjectMapper.testSubjectListToTestSubjectDtoList(testSubjectList);
     }
 }

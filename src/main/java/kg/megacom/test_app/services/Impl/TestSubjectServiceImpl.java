@@ -2,11 +2,14 @@ package kg.megacom.test_app.services.Impl;
 
 import kg.megacom.test_app.dao.TestSubjectDao;
 import kg.megacom.test_app.mappers.TestSubjectMapper;
+import kg.megacom.test_app.models.dto.TestDto;
 import kg.megacom.test_app.models.dto.TestSubjectDto;
 import kg.megacom.test_app.models.entities.TestSubject;
 import kg.megacom.test_app.services.TestSubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TestSubjectServiceImpl implements TestSubjectService {
@@ -40,6 +43,11 @@ public class TestSubjectServiceImpl implements TestSubjectService {
 
     @Override
     public TestSubjectDto delete(TestSubjectDto test_subject) {
+        return null;
+    }
+
+    @Override
+    public List<TestSubjectDto> findAllByTest(TestDto testDto) {
         return null;
     }
 }

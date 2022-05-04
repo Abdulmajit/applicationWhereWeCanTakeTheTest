@@ -3,6 +3,7 @@ package kg.megacom.test_app.services.Impl;
 import kg.megacom.test_app.dao.TestDao;
 import kg.megacom.test_app.mappers.TestMapper;
 import kg.megacom.test_app.models.dto.*;
+import kg.megacom.test_app.models.dto.json.PreparedTest;
 import kg.megacom.test_app.models.dto.json.TestCreateJson;
 import kg.megacom.test_app.models.dto.json.TestResultJson;
 import kg.megacom.test_app.models.entities.Test;
@@ -31,7 +32,7 @@ public class TestServiceImpl implements TestService {
     @Autowired
     private TestSubjectQuestionService testSubjectQuestionService;
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
 
     @Override
@@ -76,6 +77,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public TestResultJson createNewTest(TestCreateJson createJson) {
+        log.info("Test create input body --- {}", createJson);
         LanguageDto languageDto = languageService.findById(createJson.getLanguageId());
         if(languageDto == null){
             TestResultJson result = new TestResultJson();
@@ -83,6 +85,7 @@ public class TestServiceImpl implements TestService {
             result.setMessage("Lang not found");
             return result;
         }
+
 
         TestDto testDto = new TestDto();
         testDto.setName(createJson.getName());
@@ -113,5 +116,27 @@ public class TestServiceImpl implements TestService {
         result.setTestName(savedTest.getName());
         result.setTestId(savedTest.getId());
         return result;
+    }
+
+    @Override
+    public PreparedTest getById(Long testId) {
+        PreparedTest prepTest = new PreparedTest();
+        // Получить объект тест по id
+        TestDto testDto = findById(testId);
+        // проверка на наличие теста
+        if(testDto == null){
+            prepTest.setStatus(0);
+            prepTest.setMessage("Test not found");
+            return prepTest;
+        }
+
+
+
+
+        // findAllTestSubjectsByTest
+        // в цикле перебираем и по каждому TestSubject находим TestSubjectQuestions
+        //
+
+        return null;
     }
 }

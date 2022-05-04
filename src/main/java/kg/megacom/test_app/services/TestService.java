@@ -1,6 +1,7 @@
 package kg.megacom.test_app.services;
 
 import kg.megacom.test_app.models.dto.TestDto;
+import kg.megacom.test_app.models.dto.json.PreparedTest;
 import kg.megacom.test_app.models.dto.json.TestCreateJson;
 import kg.megacom.test_app.models.dto.json.TestResultJson;
 
@@ -19,4 +20,6 @@ public interface TestService {
     List<TestDto> findAllByActive();
 
     TestResultJson createNewTest(TestCreateJson createJson);
+
+    PreparedTest getById(Long testId);
 }

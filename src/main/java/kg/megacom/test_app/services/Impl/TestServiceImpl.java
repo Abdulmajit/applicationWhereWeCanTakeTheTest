@@ -3,7 +3,13 @@ package kg.megacom.test_app.services.Impl;
 import kg.megacom.test_app.dao.TestDao;
 import kg.megacom.test_app.mappers.TestMapper;
 import kg.megacom.test_app.models.dto.*;
-import kg.megacom.test_app.models.dto.json.*;
+import kg.megacom.test_app.models.dto.json.check.CheckRequestBody;
+import kg.megacom.test_app.models.dto.json.check.CheckResponseBody;
+import kg.megacom.test_app.models.dto.json.create.TestCreateJson;
+import kg.megacom.test_app.models.dto.json.create.TestResultJson;
+import kg.megacom.test_app.models.dto.json.get.PreparedAnswer;
+import kg.megacom.test_app.models.dto.json.get.PreparedQuestion;
+import kg.megacom.test_app.models.dto.json.get.PreparedTest;
 import kg.megacom.test_app.models.entities.Test;
 import kg.megacom.test_app.services.*;
 import org.slf4j.Logger;
@@ -163,5 +169,27 @@ public class TestServiceImpl implements TestService {
         prepTest.setStatus(1);
         prepTest.setMessage("Успешно");
         return prepTest;
+    }
+
+    @Override
+    public CheckResponseBody checkTest(CheckRequestBody checkRequestBody) {
+        // Создать объект CheckResponseBody
+        //1. Найти Тест(объект Test) по id
+        //2. Сделать проверку на случай отсутствия теста
+        //3. Сделать проверку на наличие отвеченных вопросов
+        //4. Создать пустой список объектов ResultSubject
+        //5. Начать перебор списка полученных в параметрах метода вопросов с ответами:
+            // - найти тему(объект Subject) по id
+               // если она есть, создать объект ResultSubject  заполнить два его поля subjectId и name и correctQuestions = 0
+            // - найти вопрос(объект Question) по id
+            // - найти правильные ответы по вопросу(лучше получить список, но по идее в нем должен быть только один объект)
+            // - найти объект TestSubject по тесту(Test) и теме(Subject)
+                 // из полученного объекта TestSubject взять значение поля
+                      //questionAmount и положить в поле totalQuestionsBySubject в объекте ResultSubject
+            // получить один объект правильного ответа из списка полученных ответов
+            // если id этого ответа равен полученному из параметов, увеличить correctQuestions на 1
+            // добавить заполненный объект ResultSubject в список этих объектов, созданных в п.4
+        //6. Начинаем заполнять объект CheckResponseBody
+        return null;
     }
 }

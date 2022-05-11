@@ -1,15 +1,13 @@
 package kg.megacom.test_app.controllers;
 
 import kg.megacom.test_app.models.dto.TestDto;
-import kg.megacom.test_app.models.dto.json.PreparedTest;
-import kg.megacom.test_app.models.dto.json.TestCreateJson;
-import kg.megacom.test_app.models.dto.json.TestResultJson;
-import kg.megacom.test_app.models.entities.Test;
+import kg.megacom.test_app.models.dto.json.get.PreparedTest;
+import kg.megacom.test_app.models.dto.json.create.TestCreateJson;
+import kg.megacom.test_app.models.dto.json.create.TestResultJson;
 import kg.megacom.test_app.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.OctetStreamData;
 import java.util.List;
 
 @RestController

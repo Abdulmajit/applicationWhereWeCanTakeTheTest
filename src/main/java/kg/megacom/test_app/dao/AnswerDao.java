@@ -16,4 +16,7 @@ public interface AnswerDao extends JpaRepository<Answer, Long> {
    @Query(value = "select * from tb_answer a where a.question_id = ?1 and a.is_active = true", nativeQuery = true)
    List<Answer> findAllByQuestionAndIsActive(Long questionId);
 
+   @Query(value = "select * from tb_answer a where a.question_id = ?1 and a.is_active = true and is_true = true", nativeQuery = true)
+   List<Answer> findAllByQuestionAnd_trueAndActive(Long questionId);
+
 }

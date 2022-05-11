@@ -62,6 +62,12 @@ public class AnswerServiceImpl implements AnswerService {
         return answerMapper.answerListToAnswerDtoList(answers);
     }
 
+    @Override
+    public List<AnswerDto> findAllByQuestionAndTrue(QuestionDto questionDto) {
+        List<Answer> answers = answerDao.findAllByQuestionAnd_trueAndActive(questionDto.getId());
+        return answerMapper.answerListToAnswerDtoList(answers);
+    }
+
 //    @Override
 //    public List<AnswerDto> findAllByQuestion(QuestionDto questionDto) {
 //        List<Answer> answers = answerDao.findAllByQuestionAndIsActive(questionMapper.questionDtoToQuestion(questionDto),true);

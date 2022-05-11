@@ -1,10 +1,14 @@
 package kg.megacom.test_app.services.Impl;
 
 import kg.megacom.test_app.dao.TestSubjectDao;
+import kg.megacom.test_app.mappers.SubjectMapper;
 import kg.megacom.test_app.mappers.TestMapper;
 import kg.megacom.test_app.mappers.TestSubjectMapper;
+import kg.megacom.test_app.models.dto.SubjectDto;
 import kg.megacom.test_app.models.dto.TestDto;
 import kg.megacom.test_app.models.dto.TestSubjectDto;
+import kg.megacom.test_app.models.entities.Subject;
+import kg.megacom.test_app.models.entities.Test;
 import kg.megacom.test_app.models.entities.TestSubject;
 import kg.megacom.test_app.services.TestSubjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +18,14 @@ import java.util.List;
 
 @Service
 public class TestSubjectServiceImpl implements TestSubjectService {
+
     @Autowired
     private TestSubjectDao testSubjectDao;
     private TestSubjectMapper testSubjectMapper = TestSubjectMapper.INSTANCE;
     private TestMapper testMapper = TestMapper.INSTANCE;
+    private SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
+
+
     @Override
     public TestSubjectDto save(TestSubjectDto testSubjectDto) {
         TestSubject testSubject = testSubjectMapper.testSubjectDtoToTestSubject(testSubjectDto);
@@ -52,5 +60,13 @@ public class TestSubjectServiceImpl implements TestSubjectService {
     public List<TestSubjectDto> findAllByTest(TestDto testDto) {
         List<TestSubject> testSubjectList = testSubjectDao.findAllByTest(testMapper.testDtoToTest(testDto));
         return testSubjectMapper.testSubjectListToTestSubjectDtoList(testSubjectList);
+    }
+
+    @Override
+    public TestSubjectDto findByTestAndSubject(TestDto testDto, SubjectDto subjectDto) {
+        Test test = testMapper.testDtoToTest(testDto);
+        Subject subject = subjectMapper.subjectDtoToSubject(subjectDto);
+        TestSubject testSubject = testSubjectDao.findAllByTestAndSubject(test, subject);
+        return testSubjectMapper.testSubjectToTestSubjectDto(testSubject);
     }
 }

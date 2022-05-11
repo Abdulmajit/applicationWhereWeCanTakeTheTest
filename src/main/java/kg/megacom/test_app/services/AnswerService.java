@@ -20,6 +20,10 @@ public interface AnswerService {
 
     List<AnswerDto> findAllByQuestion(QuestionDto questionDto);
 
+    List<AnswerDto> findAllByQuestionAndTrue(QuestionDto questionDto);
+
+
+
 
 
 

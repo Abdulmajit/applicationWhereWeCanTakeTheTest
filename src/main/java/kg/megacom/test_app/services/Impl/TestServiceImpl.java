@@ -4,7 +4,9 @@ import kg.megacom.test_app.dao.TestDao;
 import kg.megacom.test_app.mappers.TestMapper;
 import kg.megacom.test_app.models.dto.*;
 import kg.megacom.test_app.models.dto.json.check.CheckRequestBody;
+import kg.megacom.test_app.models.dto.json.check.CheckRequestQuest;
 import kg.megacom.test_app.models.dto.json.check.CheckResponseBody;
+import kg.megacom.test_app.models.dto.json.check.ResultSubject;
 import kg.megacom.test_app.models.dto.json.create.TestCreateJson;
 import kg.megacom.test_app.models.dto.json.create.TestResultJson;
 import kg.megacom.test_app.models.dto.json.get.PreparedAnswer;
@@ -20,6 +22,10 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 @Service
 public class TestServiceImpl implements TestService {
@@ -190,6 +196,68 @@ public class TestServiceImpl implements TestService {
             // если id этого ответа равен полученному из параметов, увеличить correctQuestions на 1
             // добавить заполненный объект ResultSubject в список этих объектов, созданных в п.4
         //6. Начинаем заполнять объект CheckResponseBody
-        return null;
+
+        CheckResponseBody checkResponseBody = new CheckResponseBody();
+        TestDto testDto = findById(checkRequestBody.getTestId());
+        if(testDto == null){
+            checkResponseBody.setStatus(0);
+            checkResponseBody.setMessage("Тест не найден");
+            return checkResponseBody;
+        }
+        if(checkRequestBody.getQuestions().isEmpty()){
+            checkResponseBody.setStatus(0);
+            checkResponseBody.setMessage("Нет ответов на вопросы");
+            return checkResponseBody;
+        }
+
+        List<ResultSubject> subjects = new ArrayList<>();
+
+        checkRequestBody.getQuestions().stream().filter(distinctByKey(CheckRequestQuest::getSubjectId)).forEach(x-> {
+                    SubjectDto subjectDto = subjectService.findById(x.getSubjectId());
+                    if (subjectDto == null) return;
+
+                    ResultSubject resultSubject = new ResultSubject();
+                    resultSubject.setSubjectId(x.getSubjectId());
+                    resultSubject.setName(subjectDto.getTitle());
+                    resultSubject.setCorrectQuestions(0);
+                    subjects.add(resultSubject);
+
+        });
+
+        checkRequestBody.getQuestions().stream().forEach(x->{
+                subjects.stream().forEach(y->{
+                    if(x.getSubjectId().equals(y.getSubjectId())) {
+
+                        QuestionDto questionDto = questionService.findById(x.getQuestionId());
+                        if (questionDto == null) return;
+
+                        List<AnswerDto> answerDtos = answerService.findAllByQuestionAndTrue(questionDto);
+
+                        SubjectDto subjectDto = subjectService.findById(y.getSubjectId());
+
+                        TestSubjectDto testSubjectDto = testSubjectService.findByTestAndSubject(testDto, subjectDto);
+                        y.setTotalQuestionsBySubject(testSubjectDto.getQuestionAmount());
+
+                        AnswerDto answerDto = answerDtos.get(0);
+
+                        if (answerDto.getId().equals(x.getAnswerId())) {
+                            y.setCorrectQuestions(y.getCorrectQuestions() + 1);
+                        }
+                    }
+                });
+        });
+
+       checkResponseBody.setStatus(1);
+       checkResponseBody.setMessage("Success");
+       checkResponseBody.setSubjects(subjects);
+       checkResponseBody.setTestName(testDto.getName());
+       checkResponseBody.setTotalQuestions(subjects.stream().mapToInt(ResultSubject::getTotalQuestionsBySubject).sum());
+       checkResponseBody.setCorrectAnsweredQuestions(subjects.stream().mapToInt(ResultSubject::getCorrectQuestions).sum());
+       return checkResponseBody;
+    }
+
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
     }
 }
